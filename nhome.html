@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME PAGE</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+
+<body background="https://img.freepik.com/free-vector/clean-medical-background_53876-116875.jpg?w=1380&t=st=1699177587~exp=1699178187~hmac=484dbbfc84290c8f8e74606b7214e5fe9e9920bfa1c68417f824743b485ac3a4">
+    <header>
+        <h2 class="logo">E-CLINIC WORKS</h2>
+        <nav class="navigation">
+            <a href="#">HOME</a>
+            <a href="#">ABOUT</a>
+            <a href="#">APPOINTMENT</a>
+            <a href="#">CONTACT</a>
+            <button class="btnLogin-popup">LOGIN</button>
+        </nav>
+    </header>
+    <div class="wrapper">
+        <span class="icon-close">
+            <ion-icon name="close-outline"></ion-icon>
+        </span>
+        <div class="form-box login">
+            <h2>LOGIN</h2>
+            <form action="login.php" method="post">
+            
+            <div class="input-box">
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                    <input type="text" name="name" required>
+                    <label> FULL NAME</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <input type="email" name="email" required>
+                    <input type="hidden" name="otp" value="<?php echo  $otp; ?>">
+                    <label>Email-Id</label>
+                </div>
+                <button type="submit" class="btn">PROCEED</button>
+                <div class="login-register">
+                    <p> Not registered yet?
+                        <a href="#" class="register-link"> REGISTER NOW!!</a>
+                    </p>
+                </div>
+            </form>
+        </div>  
+
+        <div class="form-box register">
+            <h2>Registeration</h2>
+            <form action="#" method="post">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>          
+                    <label>FULL NAME</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="calendar-outline"></ion-icon></span>
+                    <input type="date" name="dob" required id="date"  >
+                    <label>BIRTH DATE</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="call-outline"></ion-icon></span>
+                    <input type="tel" name="number" id="phone" required pattern="^[789]\d{9}$" >
+                    <label>Phone No</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <input type="email" name="email" required id="email">
+                    <label>EMAIL ID</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                    <!-- <input type="email" name="email" required id="email"> -->
+                    <input type="password" value="" id="password" pattern=".{8,}" required />
+                    <label>Password</label>
+                </div>
+
+                 <!-- <div class="remember">
+                    <label><input type="checkbox">Agree to Terms And Conditions</label>
+                </div>  -->
+                 <button type="submit" class="btn">REGISTER</button>
+                <div class="login-register">
+                    <p> Already Registered??
+                        <a href="#" class="login-link">LOGIN</a>
+                    </p>
+                </div>
+
+            </form>
+        </div> 
+    </div>
+    <script src="home.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    
+        import {
+          getDatabase,
+          ref,
+          set,
+          get,
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    
+        import {
+          getAuth,
+          createUserWithEmailAndPassword,
+          signInWithEmailAndPassword,
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    
+        //   vivke kaka's - firebase
+        const firebaseConfig = {
+          apiKey: "AIzaSyADiIYFRBnIshADFDpCBQavsa2dA7GMUag",
+          authDomain: "eclinic-proj.firebaseapp.com",
+          projectId: "eclinic-proj",
+          storageBucket: "eclinic-proj.appspot.com",
+          messagingSenderId: "305389816992",
+          appId: "1:305389816992:web:550dbcc0a91f9e01b74dc5",
+          measurementId: "G-Z22E71JTDP"
+        };
+    
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+    
+        // Registration logic here
+    
+        // Registration logic here
+    
+        async function register(event) {
+          const name = document.getElementById("name").value;
+          const date = document.getElementById("date").value;
+          const phone = document.getElementById("phone").value;
+          // const address = document.getElementById("address").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+    
+          event.preventDefault();
+    
+          try {
+            const authData = await createUserWithEmailAndPassword(
+              auth,
+              email,
+              password
+            );
+    
+            await set(ref(db, `users/${authData.user.uid}`), {
+              name,
+              date,
+              phone,
+              // address,
+              email,
+              password,
+            });
+    
+            // wrapper.classList.toggle("active");
+            window.location.href = "/nhome.html";
+            // alert("Registration Successful!");
+          } catch (error) {
+            console.error("Error during registration:", error.message);
+            alert(error.code);
+          }
+        }
+        // login logic here
+    
+        function login(event) {
+          const email = document.getElementById("login_email").value;
+          const password = document.getElementById("login_password").value;
+          event.preventDefault();
+    
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              // const user = userCredential.user;
+              console.log("Logged in user: ", userCredential);
+              alert("Login Successful! \nWelcome " + email + " !!");
+              window.location.href = "/nhome.html";
+            })
+            .catch((error) => {
+              alert("Login error: ", error.message);
+            });
+        }
+    
+        document
+          .getElementById("register_submit")
+          .addEventListener("click", function (event) {
+            register(event);
+          });
+    
+        document
+          .getElementById("login_submit")
+          .addEventListener("click", function (event) {
+            login(event);
+          });
+      </script>
+</body>
+
+</html>
